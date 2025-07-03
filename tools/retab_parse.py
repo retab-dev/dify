@@ -9,7 +9,6 @@ class RetabParsingTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
         from retab import Retab
         from retab.types.mime import MIMEData
-        import json
         import base64
 
         api_key = self.runtime.credentials.get("retab_api_key")
