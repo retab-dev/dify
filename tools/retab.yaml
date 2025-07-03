@@ -1,0 +1,138 @@
+identity:
+  name: "retab"
+  author: "retab_team"
+  label:
+    en_US: "Retab Extraction"
+description:
+  human:
+    en_US: "Tool that utilizes Retab to extract information from documents"
+  llm: "Tool that utilizes Retab to extract information from documents"
+parameters:
+  - name: json_schema
+    type: string
+    required: true
+    label:
+      en_US: JSON Schema
+    human_description:
+      en_US: "JSON schema defining the expected data structure"
+    llm_description: "JSON schema defining the expected data structure"
+    form: llm
+  - name: model
+    type: string
+    required: true
+    label:
+      en_US: Model
+    human_description:
+      en_US: "The model to use for extraction"
+    llm_description: "The model to use for extraction"
+    form: llm
+  - name: document
+    type: file
+    required: true
+    label:
+      en_US: Document
+    human_description:
+      en_US: "The document to be extracted"
+    llm_description: "The document to be extracted"
+    form: llm
+  - name: modality
+    type: select
+    options:
+      - value: "native"
+        label:
+          en_US: "Native"
+      - value: "image"
+        label:
+          en_US: "Image"
+      - value: "text"
+        label:
+          en_US: "Text"
+      - value: "image+text"
+        label:
+          en_US: "Image + Text"
+    required: true
+    label:
+      en_US: Modality
+    human_description:
+      en_US: "The modality of the document"
+    llm_description: "The modality of the document"
+    form: llm
+  - name: image_resolution_dpi
+    type: number
+    required: false
+    label:
+      en_US: Image Resolution DPI
+    human_description:
+      en_US: "The resolution the image is scanned at"
+    llm_description: "The resolution the image is scanned at"
+    form: llm
+  - name: browser_canvas
+    type: select
+    options:
+      - value: "A3"
+        label:
+          en_US: "A3"
+      - value: "A4"
+        label:
+          en_US: "A4"
+      - value: "A5"
+        label:
+          en_US: "A5"
+    required: false
+    label:
+      en_US: Browser Canvas
+    human_description:
+      en_US: "The canvas size of the browser"
+    llm_description: "The canvas size of the browser"
+    form: llm
+  - name: temperature
+    type: number
+    required: false
+    label:
+      en_US: Temperature
+    human_description:
+      en_US: "The temperature of the model"
+    form: llm
+  - name: n_consensus
+    type: number
+    required: false
+    label:
+      en_US: N Consensus
+    human_description:
+      en_US: "The number of consensus extractions to perform"
+    llm_description: "The number of consensus extractions to perform"
+    form: llm
+  - name: reasoning_effort
+    type: select
+    options:
+      - value: "low"
+        label:
+          en_US: "Low"
+      - value: "medium"
+        label:
+          en_US: "Medium"
+      - value: "high"
+        label:
+          en_US: "High"
+    required: false
+    label:
+      en_US: Reasoning Effort
+    human_description:
+      en_US: "The effort level for the model to reason about the input data"
+    llm_description: "The effort level for the model to reason about the input data"
+    form: llm
+
+extra:
+  python:
+    source: tools/retab.py
+
+output_schema:
+  type: object
+  properties:
+    choices:
+      type: array
+      items:
+        type: object
+    likelihoods:
+      type: object
+

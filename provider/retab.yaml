@@ -1,0 +1,30 @@
+identity:
+  author: "retab_team"
+  name: "retab"
+  label:
+    en_US: "retab"
+    zh_Hans: "retab"
+    pt_BR: "retab"
+  description:
+    en_US: "Tool that utilizes Retab to parse and extract information from documents"
+    zh_Hans: "Tool that utilizes Retab to parse and extract information from documents"
+    pt_BR: "Tool that utilizes Retab to parse and extract information from documents"
+  icon: "icon.svg"
+tools:
+  - tools/retab.yaml
+  - tools/retab_parse.yaml
+extra:
+  python:
+    source: provider/retab.py
+
+credentials_for_provider:
+    retab_api_key:
+        type: secret-input
+        required: true
+        label:
+            en_US: Retab API Key
+        placeholder:
+            en_US: Enter your Retab API Key
+        help:
+            en_US: How to get your Retab API Key
+        url: https://docs.retab.com/overview/quickstart
