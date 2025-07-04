@@ -14,31 +14,38 @@ class RetabTool(Tool):
 
         api_key = self.runtime.credentials.get("retab_api_key")
         if not api_key:
-            raise ValueError("API key for Retab is required but not provided in credentials.")
+            yield self.create_text_message("API key for Retab is required but not provided in credentials.")
+            return
 
         reclient = Retab(api_key=api_key)
 
         json_schema = tool_parameters.get("json_schema")
         if not json_schema:
-            raise ValueError("JSON schema is required but not provided.")
+            yield self.create_text_message("JSON schema is required but not provided.")
+            return
         try:
             json_schema = json.loads(json_schema)
         except json.JSONDecodeError as e:
-            raise ValueError(f"Invalid JSON schema: {e}") from e
+            yield self.create_text_message(f"Invalid JSON schema: {e}")
+            return
 
         model = tool_parameters.get("model")
         if not model:
-            raise ValueError("Model is required but not provided.")
+            yield self.create_text_message("Model is required but not provided.")
+            return
         
         document = tool_parameters.get("document")
         if not document:
-            raise ValueError("Document is required but not provided.")
+            yield self.create_text_message("Document is required but not provided.")
+            return
         if not isinstance(document, File):
-            raise ValueError("Document must be of type File.")
+            yield self.create_text_message("Document must be of type File.")
+            return
         
         modality = tool_parameters.get("modality")
         if not modality:
-            raise ValueError("Modality is required but not provided.")
+            yield self.create_text_message("Modality is required but not provided.")
+            return
         
         optional_parameters = {
             "image_resolution_dpi": tool_parameters.get("image_resolution_dpi"),
@@ -61,7 +68,8 @@ class RetabTool(Tool):
                 **optional_parameters # type: ignore[call-arg]
             ).model_dump()
         except Exception as e:
-            raise e
+            yield self.create_text_message(str(e))
+            return
         
         yield self.create_variable_message("choices", result["choices"])
         yield self.create_variable_message("likelihoods", result["likelihoods"])
