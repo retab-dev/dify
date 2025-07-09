@@ -29,3 +29,6 @@ Tool that utilizes Retab to parse documents into an LLM-friendly format.
 - `browser_canvas` (`select`, optional): The canvas size of the browser. Options: `A3`, `A4`, `A5`.
 - `table_parsing_format` (`select`, optional): The format to parse tables into. Options: `markdown`, `yaml`, `html`, `json`.
 
+#### Other
+Github repository: https://github.com/retab-dev/dify
+Contact: sacha@getcube.ai
