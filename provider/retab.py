@@ -13,6 +13,6 @@ class RetabProvider(ToolProvider):
         from retab import Retab
         reclient = Retab(api_key=api_key)
         try:
-            reclient.usage.monthly_credits_usage()
+            reclient.models.list()
         except Exception as e:
             raise ToolProviderCredentialValidationError("Exception occured while validating credentials: " + str(e))
