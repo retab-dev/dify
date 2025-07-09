@@ -1,6 +1,8 @@
 ## Retab Plugin
 
-### Description
+### Credentials
+
+The Retab API key is required (https://docs.retab.com/overview/quickstart)
 
 ### Tools
 
