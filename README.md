@@ -33,4 +33,4 @@ Tool that utilizes Retab to parse documents into an LLM-friendly format.
 
 #### Other
 Github repository: https://github.com/retab-dev/dify
-Contact: sacha@getcube.ai
+Contact: sacha@retab.com
