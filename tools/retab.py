@@ -9,7 +9,6 @@ class RetabTool(Tool):
     def _invoke(self, tool_parameters: dict[str, Any]) -> Generator[ToolInvokeMessage]:
         from retab import Retab
         from retab.types.mime import MIMEData
-        import json
         import base64
 
         api_key = self.runtime.credentials.get("retab_api_key")
@@ -18,53 +17,43 @@ class RetabTool(Tool):
             return
 
         reclient = Retab(api_key=api_key)
+    
+        project_id = tool_parameters.get("project_id")
+        if not project_id:
+            yield self.create_text_message("project_id is required but not provided.")
+            return
+    
+        iteration_id = tool_parameters.get("iteration_id")
+        if not iteration_id:
+            yield self.create_text_message("iteration_id is required but not provided.")
+            return
+        
+        documents = tool_parameters.get("documents")
+        if not documents:
+            yield self.create_text_message("Documents is required but not provided.")
+            return
+        if not isinstance(documents, list):
+            yield self.create_text_message("Documents must be of type List.")
+            return
+        if not all(isinstance(doc, File) for doc in documents):
+            yield self.create_text_message("All documents must be of type File.")
+            return
 
-        json_schema = tool_parameters.get("json_schema")
-        if not json_schema:
-            yield self.create_text_message("JSON schema is required but not provided.")
-            return
-        try:
-            json_schema = json.loads(json_schema)
-        except json.JSONDecodeError as e:
-            yield self.create_text_message(f"Invalid JSON schema: {e}")
-            return
-
-        model = tool_parameters.get("model")
-        if not model:
-            yield self.create_text_message("Model is required but not provided.")
-            return
-        
-        document = tool_parameters.get("document")
-        if not document:
-            yield self.create_text_message("Document is required but not provided.")
-            return
-        if not isinstance(document, File):
-            yield self.create_text_message("Document must be of type File.")
-            return
-        
-        modality = tool_parameters.get("modality")
-        if not modality:
-            yield self.create_text_message("Modality is required but not provided.")
-            return
-        
         optional_parameters = {
-            "image_resolution_dpi": tool_parameters.get("image_resolution_dpi"),
-            "browser_canvas": tool_parameters.get("browser_canvas"),
             "temperature": tool_parameters.get("temperature"),
-            "n_consensus": tool_parameters.get("n_consensus"),
-            "reasoning_effort": tool_parameters.get("reasoning_effort"),
+            "seed": tool_parameters.get("seed"),
         }
         optional_parameters = {k: v for k, v in optional_parameters.items() if v is not None}
 
         try:
-            result = reclient.documents.extract(
-                document=MIMEData(
+            result = reclient.deployments.extract(
+                project_id=project_id,
+                iteration_id=iteration_id,
+                documents=[MIMEData(
                     filename=document.filename or "document",
                     url="data:" + (document.mime_type or "octet/stream") + ";base64," + base64.b64encode(document.blob).decode('utf-8'),
-                ), # type: ignore[assignment]
-                model=model,
-                json_schema=json_schema,
-                modality=modality,
+                ) for document in documents], # type: ignore[assignment]
+                store=False,
                 **optional_parameters # type: ignore[call-arg]
             ).model_dump()
         except Exception as e:
